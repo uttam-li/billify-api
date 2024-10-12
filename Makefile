@@ -1,4 +1,6 @@
 # Simple Makefile for a Go project
+include .envrc
+MIGRATIONS_PATH = ./cmd/migrate/migrations
 
 # Build the application
 all: build test
@@ -7,7 +9,7 @@ build:
 	@echo "Building..."
 	
 	
-	@go build -o main cmd/api/main.go
+	@go build -o main cmd/api/*.go
 
 # Run the application
 run:
@@ -62,3 +64,24 @@ watch:
         fi
 
 .PHONY: all build run test clean watch docker-run docker-down itest
+
+
+.PHONY: migrate-create
+migration:
+	@migrate create -seq -ext sql -dir $(MIGRATIONS_PATH) $(filter-out $@,$(MAKECMDGOALS))
+
+.PHONY: migrate-up
+migrate-up:
+	@migrate -path=$(MIGRATIONS_PATH) -database=$(DB_ADDR) up
+
+.PHONY: migrate-down
+migrate-down:
+	@migrate -path=$(MIGRATIONS_PATH) -database=$(DB_ADDR) down $(filter-out $@,$(MAKECMDGOALS))
+
+.PHONY: seed
+seed: 
+	@go run cmd/migrate/seed/main.go
+
+.PHONY: gen-docs
+gen-docs:
+	@swag init -g ./api/main.go -d cmd,internal && swag fmt

@@ -18,13 +18,18 @@
 go.work
 tmp/
 
+
+
 # IDE specific files
 .vscode
 .idea
 
 # .env file
 .env
+.envrc
 
 # Project build
 main
 *templ.go
+
+bin/
