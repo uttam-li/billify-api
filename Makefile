@@ -1,5 +1,5 @@
 # Simple Makefile for a Go project
-include .envrc
+# include .envrc
 MIGRATIONS_PATH = ./cmd/migrate/migrations
 
 # Build the application
